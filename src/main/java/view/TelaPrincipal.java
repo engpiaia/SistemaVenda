@@ -1,6 +1,7 @@
 package view;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -45,11 +47,13 @@ public class TelaPrincipal extends Application {
         stage.setTitle("Sistema de Cadastro de Produtos, Clientes e Vendas");
         stage.setWidth(860);
         stage.setHeight(720);
-        stage.setMinWidth(760);
-        stage.setMinHeight(660);
+        stage.setMinWidth(680);
+        stage.setMinHeight(500);
         stage.setScene(scene);
         stage.setOnCloseRequest(e -> System.exit(0));
+        stage.setResizable(true);
         stage.show();
+        Platform.runLater(() -> stage.setMaximized(true));
     }
 
     // ══════════════════════════════════════════════════════════
@@ -75,10 +79,11 @@ public class TelaPrincipal extends Application {
         return barra;
     }
 
-    private VBox criarPainelCentral() {
-        VBox painel = new VBox(20);
+    private GridPane criarPainelCentral() {
+        GridPane painel = new GridPane();
         painel.setAlignment(Pos.CENTER);
-        painel.setFillWidth(true);
+        painel.setHgap(18);
+        painel.setVgap(18);
         painel.setPadding(new Insets(30));
         painel.setStyle("-fx-background-color: " + COR_PAINEL + "; -fx-background-radius: 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 18, 0, 0, 6);");
 
@@ -118,12 +123,10 @@ public class TelaPrincipal extends Application {
         );
         btnHistoricoVendas.setOnAction(e -> abrirTelaVendaListagem());
 
-        painel.getChildren().addAll(
-            btnProdutos,
-            btnClientes,
-            btnVendas,
-            btnHistoricoVendas
-        );
+        painel.add(btnProdutos, 0, 0);
+        painel.add(btnClientes, 1, 0);
+        painel.add(btnVendas, 0, 1);
+        painel.add(btnHistoricoVendas, 1, 1);
 
         return painel;
     }
@@ -134,26 +137,26 @@ public class TelaPrincipal extends Application {
 
     private Button criarBotaoModulo(String icone, String titulo, String descricao, String cor) {
         Label labelIcone = new Label(icone);
-        labelIcone.setFont(Font.font("Segoe UI Emoji", 32));
+        labelIcone.setFont(Font.font("Segoe UI Emoji", 26));
 
         Label labelTitulo = new Label(titulo);
-        labelTitulo.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+        labelTitulo.setFont(Font.font("Segoe UI", FontWeight.BOLD, 15));
         labelTitulo.setTextFill(Color.WHITE);
 
         Label labelDescricao = new Label(descricao);
-        labelDescricao.setFont(Font.font("Segoe UI", 12));
+        labelDescricao.setFont(Font.font("Segoe UI", 11));
         labelDescricao.setTextFill(Color.web("#E5E7EB"));
         labelDescricao.setWrapText(true);
-        labelDescricao.setMaxWidth(350);
+        labelDescricao.setMaxWidth(270);
 
-        VBox conteudo = new VBox(8, labelTitulo, labelDescricao);
+        VBox conteudo = new VBox(6, labelTitulo, labelDescricao);
         conteudo.setAlignment(Pos.CENTER_LEFT);
 
-        VBox botao = new VBox(10, labelIcone, conteudo);
+        VBox botao = new VBox(8, labelIcone, conteudo);
         botao.setAlignment(Pos.CENTER_LEFT);
-        botao.setPadding(new Insets(20));
-        botao.setPrefWidth(520);
-        botao.setPrefHeight(130);
+        botao.setPadding(new Insets(16));
+        botao.setPrefWidth(320);
+        botao.setPrefHeight(105);
         String estiloBase =
             "-fx-background-color: " + cor + ";"
             + "-fx-border-radius: 12;"
@@ -171,8 +174,8 @@ public class TelaPrincipal extends Application {
 
         Button btn = new Button();
         btn.setGraphic(botao);
-        btn.setPrefWidth(520);
-        btn.setPrefHeight(130);
+        btn.setPrefWidth(320);
+        btn.setPrefHeight(105);
         btn.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         btn.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 

@@ -15,9 +15,8 @@ public class VendaDAO {
      * Se qualquer item falhar (ex: estoque insuficiente), tudo é revertido.
      */
     public int finalizar(Venda venda) {
-        // CORRIGIDO: usa 'codigo' e 'quantidade' conforme a tabela real
-        String sqlVenda = "INSERT INTO venda (cliente_codigo, total) VALUES (?, ?) RETURNING codigo";
-        String sqlItem = "INSERT INTO venda_item (venda_codigo, produto_codigo, quantidade, preco_unitario, subtotal) "
+        String sqlVenda = "INSERT INTO venda (cliente_id, total) VALUES (?, ?) RETURNING id";
+        String sqlItem = "INSERT INTO item_venda (venda_id, produto_id, quantidade, preco_unitario, subtotal) "
                        + "VALUES (?, ?, ?, ?, ?)";
         String sqlEstoque = "UPDATE produto SET quantidade = quantidade - ? WHERE codigo = ? AND quantidade >= ?";
 
@@ -35,7 +34,7 @@ public class VendaDAO {
                 if (!rs.next()) {
                     throw new RuntimeException("Falha ao obter ID da venda inserida");
                 }
-                vendaId = rs.getInt("codigo");
+                vendaId = rs.getInt("id");
             }
 
             // 2. Insere os itens e baixa estoque
@@ -87,8 +86,8 @@ public class VendaDAO {
      */
     public List<Venda> listarVendas() {
         List<Venda> lista = new ArrayList<>();
-        String sql = "SELECT v.codigo, v.cliente_codigo, c.nome AS cliente_nome, v.data_venda, v.total "
-                   + "FROM venda v JOIN cliente c ON v.cliente_codigo = c.codigo "
+        String sql = "SELECT v.id, v.cliente_id, c.nome AS cliente_nome, v.data_venda, v.total "
+                   + "FROM venda v JOIN cliente c ON v.cliente_id = c.id "
                    + "ORDER BY v.data_venda DESC";
         Connection conn = null;
 
@@ -99,8 +98,8 @@ public class VendaDAO {
 
             while (rs.next()) {
                 Venda v = new Venda();
-                v.setId(rs.getInt("codigo"));
-                v.setClienteId(rs.getInt("cliente_codigo"));
+                v.setId(rs.getInt("id"));
+                v.setClienteId(rs.getInt("cliente_id"));
                 v.setClienteNome(rs.getString("cliente_nome"));
                 v.setDataVenda(rs.getTimestamp("data_venda"));
                 v.setTotal(rs.getBigDecimal("total"));
@@ -120,12 +119,11 @@ public class VendaDAO {
      */
     public List<ItemVenda> buscarItensPorVenda(int vendaId) {
         List<ItemVenda> itens = new ArrayList<>();
-        // CORRIGIDO: JOIN com produto usando 'codigo', não 'id'
-        String sql = "SELECT iv.codigo, iv.venda_codigo, iv.produto_codigo, p.nome AS produto_nome, "
+        String sql = "SELECT iv.id, iv.venda_id, iv.produto_id, p.nome AS produto_nome, "
                    + "iv.quantidade, iv.preco_unitario, iv.subtotal "
-                   + "FROM venda_item iv "
-                   + "JOIN produto p ON iv.produto_codigo = p.codigo "
-                   + "WHERE iv.venda_codigo = ?";
+                   + "FROM item_venda iv "
+                   + "JOIN produto p ON iv.produto_id = p.codigo "
+                   + "WHERE iv.venda_id = ?";
         Connection conn = null;
 
         try {
@@ -136,9 +134,9 @@ public class VendaDAO {
 
             while (rs.next()) {
                 ItemVenda item = new ItemVenda();
-                item.setId(rs.getInt("codigo"));
-                item.setVendaId(rs.getInt("venda_codigo"));
-                item.setProdutoId(rs.getInt("produto_codigo"));
+                item.setId(rs.getInt("id"));
+                item.setVendaId(rs.getInt("venda_id"));
+                item.setProdutoId(rs.getInt("produto_id"));
                 item.setProdutoNome(rs.getString("produto_nome"));
                 item.setQuantidade(rs.getInt("quantidade"));
                 item.setPrecoUnitario(rs.getBigDecimal("preco_unitario"));

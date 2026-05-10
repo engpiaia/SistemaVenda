@@ -18,7 +18,7 @@ public class Conexao {
     private static final String PORTA   = "5432";           // porta padrão do PostgreSQL
     private static final String BANCO   = "cadastro_produtos";
     private static final String USUARIO = "postgres";       // ajuste para seu usuário
-    private static final String SENHA   = "senac2025";      // ajuste para sua senha
+    private static final String SENHA   = "SUA SENHA";      // ajuste para sua senha
 
     // Monta a URL no formato exigido pelo driver JDBC do PostgreSQL
     private static final String URL =
